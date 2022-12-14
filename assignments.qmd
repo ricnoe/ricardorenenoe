@@ -348,3 +348,171 @@ lines(seq,predict, col = "blue", lwd = 2)
 lines(smoothspline, col = "green", lwd = 2)
 ```
 
+```{r}
+library(readxl)
+library(ggplot2)
+library(tidyverse)
+
+music <- read_excel("C:/Users/Owner/OneDrive - The University of Texas at Dallas/Classes/6. Fall 2022/EPPS 6356 (Data Visualization)/Sampling Example.xlsx", 
+    col_types = c("text", "text", "numeric", 
+        "text", "numeric"))
+
+
+
+Music <- music %>% 
+  filter(Political_Party == 0) %>% 
+  ggplot(aes(y = Age, x = Vote, colour = Music_Taste)) +
+  geom_point(alpha = 0.3) +
+  theme_bw() +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_colour_brewer(palette = "Set1") +
+  labs(x = "Likeliness to Vote",
+       y = "Age",
+       title = "Likeliness to Vote by Democrats",
+       subtitle = "Age, Music Taste and Voting",
+       caption = Sys.Date())
+
+Music
+```
+
+### Assignment #5
+
+Charts
+
+```{r}
+library(ggplot2)
+library(ggplot2)
+library(tidyverse)
+library(readxl)
+library(RColorBrewer)
+music <- read_excel("C:/Users/Owner/OneDrive - The University of Texas at Dallas/Classes/6. Fall 2022/EPPS 6356 (Data Visualization)/Sampling Example.xlsx", 
+    col_types = c("text", "text", "numeric", 
+        "text", "numeric"))
+
+#Bar Chart I
+p1 <- ggplot(music,
+       aes(x = Music_Taste,
+           group = Political_Party,
+           fill = Political_Party))+
+  scale_fill_brewer(palette = "Paired") +
+  geom_bar(position='dodge') +
+  coord_flip() +
+  labs(title = "Music Taste and Political Party") +
+  theme_classic()
+
+p1
+
+#Bar Chart II
+p2 <- ggplot(music,
+             aes(x = Political_Party,
+                 group = Music_Taste,
+                 fill = Music_Taste))+
+  scale_fill_manual(breaks = c("R&B", "Pop", "Other", "Latin", "Country", "Classical" ),
+                    values = c("lightgreen", "lightblue", "orange", "red", "green", "purple")) +
+  geom_bar(position='stack') +
+  labs(title = "Music and Political Party II") +
+  theme_classic()
+p2
+
+#Circular Area Chart
+
+p3 <- ggplot(music, aes(x = Age, fill = Music_Taste)) +
+  geom_histogram(binwidth = 15, boundary = -7.5) +
+  coord_polar() +
+  scale_x_continuous(limits = c(20, 70)) +
+  scale_fill_brewer(palette = "Set2") +
+  xlab("Age")+
+  labs(title = "Age and Music Taste")
+
+p3
+
+```
+
+### Assignment #6
+
+App and Interface![](images/Shiny-01.png)
+
+![](images/Interface.png)
+
+### Assignment #9
+
+```{r}
+library(TSstudio)
+quantmod::getSymbols("AAPL", src="yahoo")
+ts_plot(AAPL$AAPL.Adjusted, 
+        title = "Apple Stock prices",
+        Ytitle = "")
+class(AAPL) # What class is this object?
+# Some sample dataset from TSstudio
+ts_seasonal(USgas, type = "box") # month-year matrix data
+# What class is USgas?
+
+# Sample charts
+ts_heatmap(USgas)
+ts_cor(USgas) # ACF and PACF
+ts_lags(USgas, margin = .01)
+usgas=data.frame(USgas)
+
+# Libraries
+library(ggplot2)
+library(dplyr)
+library(plotly)
+
+# Load dataset from github
+data <- read.table("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/3_TwoNumOrdered.csv", header=T)
+data$date <- as.Date(data$date)
+
+# Usual area chart
+p <- data %>%
+  ggplot( aes(x=date, y=value)) +
+    geom_area(fill="#69b3a2", alpha=0.5) +
+    geom_line(color="#69b3a2") +
+    ylab("bitcoin price ($)") +
+    theme_classic()
+
+# Turn it interactive with ggplotly
+p <- ggplotly(p)
+p
+```
+
+### Assignment #10
+
+Did not attend, because of work but received access to the code
+
+```{r}
+
+#Simulation
+# Do a simulation example first -- breaks in a regression, no dynamics
+set.seed(123)
+y1 <- rnorm(50, mean=0, sd=1)     # Break at 50
+y2 <- rnorm(100, mean=2, sd=0.5)  # Break at 150
+y3 <- rnorm(50, mean=-1, sd=2)
+y <- c(y1,y2,y3)
+plot(ts(y))
+
+# Fit the breakpoint models
+library(strucchange)
+
+# One break
+system.time(M1serial <- breakpoints(y ~ 1, h=0.05, breaks=1))
+
+# Two break model
+system.time(M2serial <- breakpoints(y ~ 1, h=0.05, breaks=2))
+
+# Three break model
+system.time(M3serial <- breakpoints(y ~ 1, h=0.05, breaks=3))
+
+summary(M1serial)
+summary(M2serial)
+summary(M3serial)
+
+
+#RW Intervention Example
+set.seed(1234)
+x <- arima.sim(list(ar=c(0.9, -0.3)), n = 1000, 
+               innov = c(rnorm(333), runif(333,-0.5,0.55) + rnorm(333), rnorm(334)))
+
+# Make a pretty plot
+plot(x)
+abline(v = 333, col = "red", lwd=2); abline(v=666, col = "red", lwd=2)
+```
