@@ -168,6 +168,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <ul>
   <li><a href="#assignment-1" id="toc-assignment-1" class="nav-link active" data-scroll-target="#assignment-1">Assignment #1</a></li>
   <li><a href="#assignment-2" id="toc-assignment-2" class="nav-link" data-scroll-target="#assignment-2">Assignment #2</a></li>
+  <li><a href="#assignment-3" id="toc-assignment-3" class="nav-link" data-scroll-target="#assignment-3">Assignment #3</a></li>
   </ul>
 </nav>
     </div>
@@ -499,6 +500,153 @@ dbl (10): HPI rank, year, Continent, Population (thousands), Life Expectancy...
 <span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="fu">pie</span>(pie.sales, <span class="at">col =</span> <span class="fu">rainbow</span>(<span class="dv">7</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="assignments_files/figure-html/unnamed-chunk-8-4.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="assignment-3" class="level3">
+<h3 class="anchored" data-anchor-id="assignment-3">Assignment #3</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(<span class="at">list=</span><span class="fu">ls</span>()) </span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="do">## Anscombe (1973) Quartlet</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Load Anscombe's data</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Create four model objects</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>lm1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y1 <span class="sc">~</span> x1, <span class="at">data=</span>anscombe)</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>lm2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y2 <span class="sc">~</span> x2, <span class="at">data=</span>anscombe)</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>lm3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y3 <span class="sc">~</span> x3, <span class="at">data=</span>anscombe)</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>lm4 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y4 <span class="sc">~</span> x4, <span class="at">data=</span>anscombe)</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a><span class="do">## Fancy version (per help file)</span></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>ff <span class="ot">&lt;-</span> y <span class="sc">~</span> x</span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>mods <span class="ot">&lt;-</span> <span class="fu">setNames</span>(<span class="fu">as.list</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>), <span class="fu">paste0</span>(<span class="st">"lm"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>))</span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot using for loop</span></span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>) {</span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>  ff[<span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">paste0</span>(<span class="fu">c</span>(<span class="st">"y"</span>,<span class="st">"x"</span>), i), as.name)</span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a>  <span class="do">## or   ff[[2]] &lt;- as.name(paste0("y", i))</span></span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a>  <span class="do">##      ff[[3]] &lt;- as.name(paste0("x", i))</span></span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a>  mods[[i]] <span class="ot">&lt;-</span> lmi <span class="ot">&lt;-</span> <span class="fu">lm</span>(ff, <span class="at">data =</span> anscombe)</span>
+<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">anova</span>(lmi))</span>
+<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Response: y1
+          Df Sum Sq Mean Sq F value  Pr(&gt;F)   
+x1         1 27.510 27.5100   17.99 0.00217 **
+Residuals  9 13.763  1.5292                   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+Analysis of Variance Table
+
+Response: y2
+          Df Sum Sq Mean Sq F value   Pr(&gt;F)   
+x2         1 27.500 27.5000  17.966 0.002179 **
+Residuals  9 13.776  1.5307                    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+Analysis of Variance Table
+
+Response: y3
+          Df Sum Sq Mean Sq F value   Pr(&gt;F)   
+x3         1 27.470 27.4700  17.972 0.002176 **
+Residuals  9 13.756  1.5285                    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+Analysis of Variance Table
+
+Response: y4
+          Df Sum Sq Mean Sq F value   Pr(&gt;F)   
+x4         1 27.490 27.4900  18.003 0.002165 **
+Residuals  9 13.742  1.5269                    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(mods, coef)  <span class="co"># Note the use of this function</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                  lm1      lm2       lm3       lm4
+(Intercept) 3.0000909 3.000909 3.0024545 3.0017273
+x1          0.5000909 0.500000 0.4997273 0.4999091</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(mods, <span class="cf">function</span>(fm) <span class="fu">coef</span>(<span class="fu">summary</span>(fm)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$lm1
+             Estimate Std. Error  t value    Pr(&gt;|t|)
+(Intercept) 3.0000909  1.1247468 2.667348 0.025734051
+x1          0.5000909  0.1179055 4.241455 0.002169629
+
+$lm2
+            Estimate Std. Error  t value    Pr(&gt;|t|)
+(Intercept) 3.000909  1.1253024 2.666758 0.025758941
+x2          0.500000  0.1179637 4.238590 0.002178816
+
+$lm3
+             Estimate Std. Error  t value    Pr(&gt;|t|)
+(Intercept) 3.0024545  1.1244812 2.670080 0.025619109
+x3          0.4997273  0.1178777 4.239372 0.002176305
+
+$lm4
+             Estimate Std. Error  t value    Pr(&gt;|t|)
+(Intercept) 3.0017273  1.1239211 2.670763 0.025590425
+x4          0.4999091  0.1178189 4.243028 0.002164602</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Preparing for the plots</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>op <span class="ot">&lt;-</span> <span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>), <span class="at">mar =</span> <span class="fl">0.1</span><span class="sc">+</span><span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">4</span>,<span class="dv">1</span>,<span class="dv">1</span>), <span class="at">oma =</span>  <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">0</span>))</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot charts using for loop</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>) {</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>  ff[<span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">paste0</span>(<span class="fu">c</span>(<span class="st">"y"</span>,<span class="st">"x"</span>), i), as.name)</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(ff, <span class="at">data =</span> anscombe, <span class="at">col =</span> <span class="st">"blue"</span>, <span class="at">pch =</span> <span class="dv">21</span>, <span class="at">bg =</span> <span class="st">"blue"</span>, <span class="at">cex =</span> <span class="fl">1.2</span>,</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">19</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">13</span>))</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">abline</span>(mods[[i]], <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lwd =</span> <span class="fl">1.5</span>)</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a><span class="fu">mtext</span>(<span class="st">"Anscombe's 4 Regression data sets"</span>, <span class="at">outer =</span> <span class="cn">TRUE</span>, <span class="at">cex =</span> <span class="fl">1.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="assignments_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(op)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Over fitting with Finetune</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">2</span>, <span class="at">by =</span> <span class="fl">0.025</span>)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="dv">5</span> <span class="sc">+</span> <span class="dv">3</span><span class="sc">*</span>x<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">100</span><span class="sc">*</span>x<span class="sc">^</span><span class="dv">3</span> <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="fu">length</span>(x), <span class="dv">0</span>, <span class="dv">50</span>)</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> x<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2022</span>)</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>linearmodel <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x) <span class="co">#model fitting</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>testx <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fl">1.1</span>, <span class="fl">1.5</span>, <span class="at">by =</span> <span class="fl">0.025</span>)</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>testy <span class="ot">&lt;-</span> <span class="dv">5</span> <span class="sc">+</span> <span class="dv">3</span><span class="sc">*</span>testx<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">100</span><span class="sc">*</span>(testx)<span class="sc">^</span><span class="dv">3</span> <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="fu">length</span>(testx), <span class="dv">0</span>, <span class="dv">20</span>)</span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>predict_linear <span class="ot">&lt;-</span> <span class="fu">predict</span>(linearmodel, <span class="fu">list</span>(<span class="at">x=</span> testx)) <span class="co">#prediction on test data set</span></span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>quadraticmodel <span class="ot">&lt;-</span> <span class="fu">lm</span>(y<span class="sc">~</span> x <span class="sc">+</span> z) <span class="co">#fitting</span></span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>predict_quadratic <span class="ot">=</span> <span class="fu">predict</span>(quadraticmodel, <span class="fu">list</span>(<span class="at">x =</span> testx, <span class="at">z =</span> testx<span class="sc">^</span><span class="dv">2</span>)) <span class="co">#prediction on test data set</span></span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>smoothspline <span class="ot">&lt;-</span> <span class="fu">smooth.spline</span>(x,y,<span class="at">df =</span> <span class="dv">50</span>) <span class="co">#fitting </span></span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a>predict_spline <span class="ot">&lt;-</span> <span class="fu">predict</span>(smoothspline, testx)<span class="sc">$</span>y <span class="co">#prediction on test data set</span></span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a>seq <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fu">min</span>(x), <span class="fu">max</span>(x), <span class="at">by =</span> <span class="fl">0.001</span>)</span>
+<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a>predict <span class="ot">&lt;-</span> <span class="fu">predict</span>(quadraticmodel, <span class="fu">list</span>(<span class="at">x =</span> seq, <span class="at">z =</span> seq<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span>
+<span id="cb32-23"><a href="#cb32-23" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x,y, <span class="at">xlab =</span> <span class="st">"X"</span>, <span class="at">ylab =</span> <span class="st">"Y"</span>, <span class="at">main =</span> <span class="st">"Example of Overfitting with finetune"</span> )</span>
+<span id="cb32-24"><a href="#cb32-24" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(linearmodel, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lwd =</span> <span class="dv">1</span>)</span>
+<span id="cb32-25"><a href="#cb32-25" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(seq,predict, <span class="at">col =</span> <span class="st">"blue"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span>
+<span id="cb32-26"><a href="#cb32-26" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(smoothspline, <span class="at">col =</span> <span class="st">"green"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="assignments_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 
