@@ -1,0 +1,260 @@
+---
+title: "assignments"
+editor: visual
+---
+
+### Assignment #1
+
+1.  Generative Art
+
+![](https://www.pacegallery.com/media/images/Leo_Villareal_Cosmic_Reef_2.width-1100.png)
+
+Cosmic Reef (Villareal, 2002)
+
+![](https://www.pacegallery.com/media/images/china4_6_20.width-1100.png)
+
+Petro National (China) (Gerrard, 2022)
+
+2.  Fall R
+
+    ```{r}
+    # Title Fall color
+    # Credit: https://fronkonstin.com
+
+    # Install packages
+
+    library(gsubfn)
+    library(tidyverse)
+
+    # Define elements in plant art
+    # Each image corresponds to a different axiom, rules, angle and depth
+
+    # Leaf of Fall
+
+    axiom="X"
+    rules=list("X"="F-[[X]+X]+F[+FX]-X", "F"="FF")
+    angle=22.5
+    depth=6
+
+
+    for (i in 1:depth) axiom=gsubfn(".", rules, axiom)
+
+    actions=str_extract_all(axiom, "\\d*\\+|\\d*\\-|F|L|R|\\[|\\]|\\|") %>% unlist
+
+    status=data.frame(x=numeric(0), y=numeric(0), alfa=numeric(0))
+    points=data.frame(x1 = 0, y1 = 0, x2 = NA, y2 = NA, alfa=90, depth=1)
+
+
+    # Generating data
+    # Note: may take a minute or two
+
+    for (action in actions)
+    {
+      if (action=="F")
+      {
+        x=points[1, "x1"]+cos(points[1, "alfa"]*(pi/180))
+        y=points[1, "y1"]+sin(points[1, "alfa"]*(pi/180))
+        points[1,"x2"]=x
+        points[1,"y2"]=y
+        data.frame(x1 = x, y1 = y, x2 = NA, y2 = NA,
+                   alfa=points[1, "alfa"],
+                   depth=points[1,"depth"]) %>% rbind(points)->points
+      }
+      if (action %in% c("+", "-")){
+        alfa=points[1, "alfa"]
+        points[1, "alfa"]=eval(parse(text=paste0("alfa",action, angle)))
+      }
+      if(action=="["){
+        data.frame(x=points[1, "x1"], y=points[1, "y1"], alfa=points[1, "alfa"]) %>%
+          rbind(status) -> status
+        points[1, "depth"]=points[1, "depth"]+1
+      }
+
+      if(action=="]"){
+        depth=points[1, "depth"]
+        points[-1,]->points
+        data.frame(x1=status[1, "x"], y1=status[1, "y"], x2=NA, y2=NA,
+                   alfa=status[1, "alfa"],
+                   depth=depth-1) %>%
+          rbind(points) -> points
+        status[-1,]->status
+      }
+    }
+
+    ggplot() +
+      geom_segment(aes(x = x1, y = y1, xend = x2, yend = y2),
+                   lineend = "round",
+                   color="cornflowerblue", 
+                   data=na.omit(points)) +
+      coord_fixed(ratio = 1) +
+      theme_void() # No grid nor axes
+
+    ```
+
+3.  Critique
+
+    -   Article: The Persistence of Rural Underdevelopment: Evidence from Land Reform in Italy by Michael Albertus
+
+    -   Citation: Albertus, M. (2022). The Persistence of Rural Underdevelopment: Evidence from Land Reform in Italy. Comparative Political Studies, 1-36.
+
+    -   Criticism: Figure 7 (Albertus, 2022, p. 26), is difficult to follow and not intuitive unless reading the entire article and attempting to understand the argument brought forward within this article. It would be helpful to understand the purpose of the visualization and what is important about it - without this it is just complex and difficult to understand.
+
+### Assignment #2
+
+```{r}
+#########################################
+rm(list=ls())                          # Clear environment
+
+
+
+hpi_df <- read_csv("~/HPI.csv")
+
+colnames(hpi_df)<-c("hpi_rank","country","iso","year",
+                 "continent", "population", "life_expectancy",
+                 "ladder_of_life", "ecological_footprint",
+                 "hpi", "biocapacity_for_year", "gdp")
+
+hpi2_df <- na.omit(hpi_df)
+
+## Start plotting from basics 
+#  plotting functions.
+year <- c(2013, 2014, 2015, 2016, 2017, 2018, 2019)
+hpi_score <- aggregate(hpi ~ year, hpi2_df, mean)
+life_score  <- aggregate(life_expectancy ~ year, hpi2_df, mean)
+hpi_score <- c(hpi_score$hpi)
+life_score <- c(life_score$life_expectancy)
+
+# Setting the parameter (3 rows by 2 cols)
+par(mfrow=c(3, 2))
+
+# Setting label orientation, margins c(bottom, left, top, right) & text size
+par(las=1, mar=c(4, 4, 2, 4), cex=.7) 
+plot.new()
+plot.window(range(year), c(40, 80))
+lines(year, hpi_score)
+lines(year, life_score)
+points(year, hpi_score, pch=17, bg = "blue", cex=1) # Try different cex value?  
+points(year, life_score, pch=21, bg ="red", cex=1)  # Different background color
+par(col="gray50", fg="gray50", col.axis="gray50")
+axis(1, at=seq(2013, 2019, 2)) # What is the first number standing for?
+axis(2, at=seq(40, 80, 10))
+axis(4, at=seq(40, 80, 10))
+box(bty="u")
+mtext("year", side=1, line=2, cex=0.8)
+mtext("HPI", side=2, line=2, las=0, cex=0.8)
+mtext("Life Exp", side=4, line=2, las=0, cex=0.8)
+text(4, 5, "Bird 131")
+par(mar=c(5.1, 4.1, 4.1, 2.1), col="black", fg="black", col.axis="black")
+
+
+######## Histogram ########
+
+# Make sure no Y exceed [-3.5, 3.5]
+par(mar=c(4.5, 4.1, 3.1, 0))
+hist(hpi2_df$hpi, breaks=seq(floor(min(hpi2_df$hpi)),
+                             ceiling(max(hpi2_df$hpi))), 
+     main="Height histogram", xlab="HPI", 
+     col="gray80", freq=FALSE)
+par(mar=c(5.1, 4.1, 4.1, 2.1))
+
+
+####### Barplot ######
+library(dplyr)
+```
+
+```{r}
+summary(hpi2_df$gdp)
+```
+
+```{r}
+hpi3_df <- hpi2_df %>%
+  mutate(gdp_lev = ifelse(hpi2_df$gdp >= 31202, 'high',
+                           ifelse(hpi2_df$gdp >= 4985, 'middle',
+                                  'low')))
+
+summary(hpi2_df$hpi)
+```
+
+```{r}
+hpi3_df <- hpi3_df %>%
+  mutate(hpi_lev = ifelse(hpi2_df$hpi > 49, 'good',
+                  ifelse(hpi2_df$hpi > 39, 'average',
+                         'bad')))
+
+gdp_sub_h <- subset(hpi3_df, gdp_lev == "high")
+aggregate(gdp_lev ~ hpi_lev, gdp_sub_h, length)
+```
+
+```{r}
+gdp_sub_m <- subset(hpi3_df, gdp_lev == "middle")
+aggregate(gdp_lev ~ hpi_lev, gdp_sub_m, length)
+```
+
+```{r}
+gdp_sub_l <- subset(hpi3_df, gdp_lev == "low")
+aggregate(gdp_lev ~ hpi_lev, gdp_sub_l, length)
+```
+
+```{r}
+hpi_le <- c("average", "bad", "good")
+high <- c(122, 50, 75)
+middle <- c(223, 96, 175)
+low <- c(85, 134, 28)
+
+bar_df <- data.frame(high, middle, low)
+rownames(bar_df)=hpi_le
+
+par(mar=c(2, 3.1, 2, 2.1))
+midpts <- barplot(as.matrix(bar_df), names = rep("", 3),
+                  col = c("gray", "red", "blue"))
+legend("topright", inset=.02,
+       c("average","bad", "good"), fill = c("gray", "red", "blue"), 
+       horiz=FALSE, cex=0.5)
+mtext("GDP per capita", side=3, line=0.0, cex=0.5)
+mtext(sub(" ", "\n", colnames(bar_df)),
+      at=midpts, side=1, line=0.5, cex=0.5)
+
+par(mar=c(5.1, 4.1, 4.1, 2.1))  
+
+
+###### Boxplot ######
+par(mar=c(2, 4, 1, 0.5))
+boxplot(hpi3_df$hpi ~ hpi3_df$gdp_lev, data = hpi3_df,
+        boxwex = 0.4, at = 1:3 - 0.2,
+        subset= hpi3_df$hpi_lev == "good", col="blue",
+        xlab="",
+        ylab="HPI", ylim=c(20,70))
+mtext("GDP per capita", side=1, line=1.8, cex=0.5)
+
+boxplot(hpi3_df$hpi ~ hpi3_df$gdp_lev, data = hpi3_df, add = TRUE,
+        boxwex = 0.4, at = 1:3 + 0.2,
+        subset= hpi3_df$hpi_lev == "bad", col="red")
+legend("bottomleft", inset=.02,
+       c("good","bad"), fill = c("blue", "red"), horiz=TRUE, cex=0.5)
+par(mar=c(5.1, 4.1, 4.1, 2.1))
+
+###### Persp ######
+par(mar=c(0.5, 0.5, 0, 0), lwd=0.5)
+x <- y <- seq(-10, 10, length = 50);
+z <- outer(x, y,
+           function(x,y) {
+             r <- sqrt(x^2 + y^2)+3;
+             cos(r)/r
+           });
+
+persp(x, y, z,
+      theta  = 20,        # Rotation about z-axis, in degrees
+      phi    = 30,        # Rotation about x-axis, in degrees
+      expand = 0.5,        # Shrinking/growing of z values
+      shade  = 0.3)
+
+par(mar=c(5.1, 4.1, 4.1, 2.1), lwd=1)
+
+
+# Piechart
+par(mar=c(0, 2, 1, 2), xpd=FALSE, cex=0.5)
+pie.sales <- c(0.11, 0.06, 0.23, 0.11, 0.12, 0.37)
+names(pie.sales) <- c("Africa", "Asia",
+                      "Europe", "Oceania", "Others", "S.America")
+pie(pie.sales, col = rainbow(7))
+```
