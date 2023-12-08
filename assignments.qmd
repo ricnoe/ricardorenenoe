@@ -3,6 +3,16 @@ title: "Assignments"
 editor: visual
 ---
 
+# Final Project
+
+## Final Paper
+
+<iframe src="https://drive.google.com/file/d/11eTnzgdzBV_P6gQjJ6kDUWflnTOMojYX/preview" width="640" height="480" allow="autoplay"> </iframe>
+
+## Presentation Slides
+
+<iframe src="https://drive.google.com/file/d/11g-pJtcvaH4iLIfHxIjDWv91FCA8hAhI/preview" width="640" height="480" allow="autoplay"> </iframe>
+
 # Assignment #1
 
 **ANALYZE SURVEY**
